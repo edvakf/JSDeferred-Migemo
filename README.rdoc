@@ -1,0 +1,15 @@
+= JSDeferred-Migemo
+
+Migemo engine using Web SQL Database.
+
+== Dependency
+- jsdeferred.js <http://github.com/cho45/jsdeferred>
+- jsdeferred-webdatabase <http://github.com/hotchpotch/jsdeferred-webdatabase>
+
+== Author
+
+Atsushi TAKAYAMA (@edvakf on twitter)
+
+== Lisence
+
+The MIT Lisence
