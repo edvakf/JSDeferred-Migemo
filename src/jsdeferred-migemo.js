@@ -112,12 +112,11 @@
               var word = s.shift();
               var first = word.charAt(0);
               var completions = s;
-              if (word == '_') console.log(JSON.stringify([word, first, completions]))
               completions.forEach(function(completion) {
                 new Dictionary({word: sqlLikeEscape(word), first: first, completion: completion}).save();
               });
               if (i % 10000 == 0) {
-                console.log(i + ' items stored. Time : ' + Math.floor((new Date-t)/100)/10 + ' s');
+                //console.log(i + ' items stored. Time : ' + Math.floor((new Date-t)/100)/10 + ' s');
                 break;
               }
             }
@@ -148,7 +147,7 @@
         where: ['first = ? AND word LIKE ?', [first, sqlLikeEscape(word) + '%'] ]
       })
       .next(function(results) {
-        console.log(results.length + ' results for for '+word+', took '+ (new Date - t) +' ms.');
+        //console.log(results.length + ' results for for '+word+', took '+ (new Date - t) +' ms.');
         return results.map(function(result) {return result.completion;});
       });
   };
@@ -182,7 +181,7 @@
           return unique(results);
         })
       })
-    ).next(function(res) {console.log(new Date - t); return res;});
+    ); //.next(function(res) {console.log(new Date - t); return res;});
   };
 
   function concat(ary) {

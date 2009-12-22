@@ -145,28 +145,6 @@
     "っ":"ッ","ヵ":"ヵ","ヶ":"ヶ"
   };
 
-  /*
-  var hiraganaToHankakuTable = {
-    "あ":"ｱ","い":"ｲ","う":"ｳ","え":"ｴ","ｵ":"オ",
-    "か":"ｶ","き":"ｷ","く":"ｸ","け":"ｹ","こ":"ｺ",
-    "さ":"ｻ","し":"ｼ","す":"ｽ","せ":"ｾ","そ":"ｿ",
-    "た":"ﾀ","ち":"ﾁ","つ":"ﾂ","て":"ﾃ","と":"ﾄ",
-    "な":"ﾅ","に":"ﾆ","ぬ":"ﾇ","ね":"ﾈ","の":"ﾉ",
-    "は":"ﾊ","ひ":"ﾋ","ふ":"ﾌ","へ":"ﾍ","ほ":"ﾎ",
-    "ま":"ﾏ","み":"ﾐ","む":"ﾑ","め":"ﾒ","も":"ﾓ",
-    "や":"ﾔ","ゆ":"ﾕ","よ":"ﾖ","う゛":"ｳﾞ",
-    "ら":"ﾗ","り":"ﾘ","る":"ﾙ","れ":"ﾚ","ろ":"ﾛ",
-    "わ":"ﾜ","を":"ｦ","ん":"ﾝ",
-    "が":"ｶﾞ","ぎ":"ｷﾞ","ぐ":"ｸﾞ","げ":"ｹﾞ","ご":"ｺﾞ",
-    "ざ":"ｻﾞ","じ":"ｼﾞ","ず":"ｽﾞ","ぜ":"ｾﾞ","ぞ":"ｿﾞ",
-    "だ":"ﾀﾞ","ぢ":"ﾁﾞ","づ":"ﾂﾞ","で":"ﾃﾞ","ど":"ﾄﾞ",
-    "ば":"ﾊﾞ","び":"ﾋﾞ","ぶ":"ﾌﾞ","べ":"ﾍﾞ","ぼ":"ﾎﾞ",
-    "ぱ":"ﾊﾟ","ぴ":"ﾋﾟ","ぷ":"ﾌﾟ","ぺ":"ﾍﾟ","ぽ":"ﾎﾟ",
-    "ゃ":"ｬ","ゅ":"ｭ","ょ":"ｮ",
-    "ぁ":"ｧ","ぃ":"ｨ","ぅ":"ｩ","ぇ":"ｪ","ぉ":"ｫ",
-    "っ":"ｯ"
-  };
-  */
   var zenkakuToHankakuTable = {
     "ア":"ｱ","イ":"ｲ","ウ":"ｳ","エ":"ｴ","オ":"ｵ",
     "カ":"ｶ","キ":"ｷ","ク":"ｸ","ケ":"ｹ","コ":"ｺ",
@@ -188,34 +166,61 @@
     "ッ":"ｯ"
   };
 
+  var hiraganaToHankakuTable = {
+    "あ":"ｱ","い":"ｲ","う":"ｳ","え":"ｴ","ｵ":"オ",
+    "か":"ｶ","き":"ｷ","く":"ｸ","け":"ｹ","こ":"ｺ",
+    "さ":"ｻ","し":"ｼ","す":"ｽ","せ":"ｾ","そ":"ｿ",
+    "た":"ﾀ","ち":"ﾁ","つ":"ﾂ","て":"ﾃ","と":"ﾄ",
+    "な":"ﾅ","に":"ﾆ","ぬ":"ﾇ","ね":"ﾈ","の":"ﾉ",
+    "は":"ﾊ","ひ":"ﾋ","ふ":"ﾌ","へ":"ﾍ","ほ":"ﾎ",
+    "ま":"ﾏ","み":"ﾐ","む":"ﾑ","め":"ﾒ","も":"ﾓ",
+    "や":"ﾔ","ゆ":"ﾕ","よ":"ﾖ","う゛":"ｳﾞ",
+    "ら":"ﾗ","り":"ﾘ","る":"ﾙ","れ":"ﾚ","ろ":"ﾛ",
+    "わ":"ﾜ","を":"ｦ","ん":"ﾝ",
+    "が":"ｶﾞ","ぎ":"ｷﾞ","ぐ":"ｸﾞ","げ":"ｹﾞ","ご":"ｺﾞ",
+    "ざ":"ｻﾞ","じ":"ｼﾞ","ず":"ｽﾞ","ぜ":"ｾﾞ","ぞ":"ｿﾞ",
+    "だ":"ﾀﾞ","ぢ":"ﾁﾞ","づ":"ﾂﾞ","で":"ﾃﾞ","ど":"ﾄﾞ",
+    "ば":"ﾊﾞ","び":"ﾋﾞ","ぶ":"ﾌﾞ","べ":"ﾍﾞ","ぼ":"ﾎﾞ",
+    "ぱ":"ﾊﾟ","ぴ":"ﾋﾟ","ぷ":"ﾌﾟ","ぺ":"ﾍﾟ","ぽ":"ﾎﾟ",
+    "ゃ":"ｬ","ゅ":"ｭ","ょ":"ｮ",
+    "ぁ":"ｧ","ぃ":"ｨ","ぅ":"ｩ","ぇ":"ｪ","ぉ":"ｫ",
+    "っ":"ｯ"
+  };
+
   var all = [];
   for (var x in hankakuToZenkakuTable) all.push(x);
   var str = getRegExpStringFromWords(all,true);
-  var re10 = new RegExp('^(' + str + ')+$');
+  var re10 = new RegExp('^(?:' + str + ')+$');
   var re11 = new RegExp( str , 'g');
 
-  /*
   all = [];
   for (var x in hiraganaToKatakanaTable) all.push(x);
   var str = getRegExpStringFromWords(all,true);
-  var re20 = new RegExp('^(' + str + ')+$');
+  var re20 = new RegExp('^(?:' + str + ')+$');
   var re21 = new RegExp( str , 'g');
-  */
 
   all = [];
   for (var x in zenkakuToHankakuTable) all.push(x);
   var str = getRegExpStringFromWords(all,true);
-  var re30 = new RegExp('^(' + str + ')+$');
+  var re30 = new RegExp('^(?:' + str + ')+$');
   var re31 = new RegExp( str , 'g');
+
+  all = [];
+  for (var x in hiraganaToHankakuTable) all.push(x);
+  var str = getRegExpStringFromWords(all,true);
+  var re40 = new RegExp('^(?:' + str + ')+$');
+  var re41 = new RegExp( str , 'g');
 
   function expandResult(completion) {
     var res = [completion];
     if (re10.test(completion)) { // hankakuToZenkaku
       res.push( completion.replace(re11, function(s) {return hankakuToZenkakuTable[s];}) );
-    }/* else if (re20.test(completion)) { // hiraganaToKatakana
+    } else if (re20.test(completion)) { // hiraganaToKatakana
       res.push( completion.replace(re21, function(s) {return hiraganaToKatakanaTable[s];}) );
-    }*/ else if (re30.test(completion)) { // hiraganaToHankaku
+    } else if (re30.test(completion)) { // hiraganaToHankaku
       res.push( completion.replace(re31, function(s) {return zenkakuToHankakuTable[s];}) );
+    } else if (re40.test(completion)) { // hiraganaToHankaku
+      res.push( completion.replace(re41, function(s) {return hiraganaToHankakuTable[s];}) );
     }
     return res;
   }
