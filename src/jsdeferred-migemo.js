@@ -86,7 +86,7 @@
     table :  'dictionary', 
     primaryKeys : ['id'],
     fields : {
-      id         : 'id',
+      id         : 'INTEGER PRIMARY KEY',
       word       : 'TEXT COLLATE NOCASE',
       first      : 'TEXT(1) NOT NULL COLLATE NOCASE', // first letter of word
       completion : 'TEXT NOT NULL'
@@ -104,7 +104,7 @@
         var lines = text.split(/\s*\n/);
         var i=0, line;
         var t = new Date;
-        return Deferred.loop(Math.floor(lines.length/10000), function() {
+        return Deferred.loop(Math.ceil(lines.length/1000), function() {
           return Dictionary._db.transaction(function() {
             while (line = lines[i++]) {
               if (/^;;/.test(line) || /^\s*$/.test(line)) continue;
@@ -115,7 +115,7 @@
               completions.forEach(function(completion) {
                 new Dictionary({word: sqlLikeEscape(word), first: first, completion: completion}).save();
               });
-              if (i % 10000 == 0) {
+              if (i % 1000 == 0) {
                 if (Deferred.Migemo.debug) console.log(i + ' items stored. Time : ' + Math.floor((new Date-t)/100)/10 + ' s');
                 break;
               }
