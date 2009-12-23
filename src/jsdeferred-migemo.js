@@ -170,10 +170,10 @@
           group.map(function(q) {return lookupWords(q);})
         )
           // from the above example
-          // results : [ ['ata'], ['あた','私','頭','辺り','当り','新しい',...] ]
-          // or results : [ ['attack', 'attach'], ['あった'] ]
+          // ["ata","あた"] => results: [ [], ['私','頭','辺り','当り','新しい',...] ]
+          // ["atta","あった"] => results : [ ['attack', 'attach'], ['あった'] ]
         .next(function(results) { 
-          results = concat(results);
+          results = concat(results).concat(concat(expanded));
           results = results.map(expandResult);
           // what expandResult does is: 'attack' => ['attack', 'attacked', 'attacking', 'attacker'] 
           // or 'あった' => ['あった', 'アッタ']

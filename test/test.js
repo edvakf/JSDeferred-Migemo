@@ -168,6 +168,8 @@ Deferred
     .next(function(res) { ok(true, 'query : "shougi kaisetu", results : ' + j(res)) })
     ._(Migemo).getCompletion('a')  // can handle very long results?
     .next(function(res) { ok(true, 'query : "a", results : ' + j(res)) })
+    ._(Migemo).getCompletion('attorney')
+    .next(function(res) { ok(true, 'query : "attorney", results : ' + j(res)) })
     .error(function(e) { ok(false, e.toString()) })
     .next(function() { done.call(); })
 })
@@ -179,6 +181,8 @@ Deferred
     .next(function(res) { ok(true, 'query : "shougi kaisetu", results : ' + j(res)) })
     ._(Migemo).getRegExpString('a')  // can handle very long results?
     .next(function(res) { ok(true, 'query : "a", results : ' + j(res)); equals(true, new RegExp(res).test('相討ち') ); })
+    ._(Migemo).getRegExpString('attorney')
+    .next(function(res) { ok(true, 'query : "attorney", results : ' + j(res)) })
     .error(function(e) { ok(false, e.toString()) })
     .next(function() { done.call(); })
 })
