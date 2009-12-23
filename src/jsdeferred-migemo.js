@@ -116,7 +116,7 @@
                 new Dictionary({word: sqlLikeEscape(word), first: first, completion: completion}).save();
               });
               if (i % 10000 == 0) {
-                //console.log(i + ' items stored. Time : ' + Math.floor((new Date-t)/100)/10 + ' s');
+                if (Deferred.Migemo.debug) console.log(i + ' items stored. Time : ' + Math.floor((new Date-t)/100)/10 + ' s');
                 break;
               }
             }
@@ -138,17 +138,46 @@
     return d;
   };
 
-  function lookupWords(word) {
+  var findAmbiguousCache = {};
+  function findAmbiguous(word) {
+    // if cache exists
+    var cached = findAmbiguousCache[word];
+    if (cached) return Deferred.next(function() {return cached;});
+    // else 
     var first = word.charAt(0);
-    var t = new Date;
     return Dictionary
       .find({
         fields: ['completion'], 
         where: ['first = ? AND word LIKE ?', [first, sqlLikeEscape(word) + '%'] ]
       })
       .next(function(results) {
-        //console.log(results.length + ' results for for '+word+', took '+ (new Date - t) +' ms.');
         return results.map(function(result) {return result.completion;});
+      })
+      .next(function(res) { // caching mechanizm
+        findAmbiguousCache[word] = res;
+        setTimeout(function() { findAmbiguousCache[word] = null; },60*1000); // auto-delete cache after 1 min.
+        return res;
+      });
+  };
+
+  var findExactCache = {};
+  function findExact(word) {
+    // if cache exists
+    var cached = findExactCache[word];
+    if (cached) return Deferred.next(function() {return cached;});
+    // else 
+    return Dictionary
+      .find({
+        fields: ['completion'], 
+        where: ['word = ?', [sqlLikeEscape(word)] ]
+      })
+      .next(function(results) {
+        return results.map(function(result) {return result.completion;});
+      })
+      .next(function(res) { // caching mechanizm
+        findExactCache[word] = res;
+        setTimeout(function() { findExactCache[word] = null; },60*1000); // auto-delete cache after 1 min.
+        return res;
       });
   };
 
@@ -163,17 +192,24 @@
     // expanding query means something like
     // query : 'ata asa' => expanded : [["ata","あた"], ["atta","あった"]]
     var expanded = expandQuery(query);
+    var last = expanded[expanded.length-1];
     
-    return Deferred.parallel( 
+    return Deferred.parallel(
       expanded.map(function(group) {
-        return Deferred.parallel(
-          group.map(function(q) {return lookupWords(q);})
-        )
-          // from the above example
-          // ["ata","あた"] => results: [ [], ['私','頭','辺り','当り','新しい',...] ]
-          // ["atta","あった"] => results : [ ['attack', 'attach'], ['あった'] ]
+        if (group === last) {
+          var lookups = group.map(function(q) {return findAmbiguous(q);});
+        } else {
+          var lookups = group.map(function(q) {return findExact(q);});
+        }
+
+        return Deferred.parallel( lookups )
+        .next(function(res) {
+          if (Deferred.Migemo.debug) console.log(group+' : '+ (new Date - t) +' ms.');
+          return res;
+        })
+          // group : ["atta","あった"] => results : [ ['attack', 'attach'], ['あった'] ]
         .next(function(results) { 
-          results = concat(results).concat(concat(expanded));
+          results = concat(results).concat(group);
           results = results.map(expandResult);
           // what expandResult does is: 'attack' => ['attack', 'attacked', 'attacking', 'attacker'] 
           // or 'あった' => ['あった', 'アッタ']
@@ -181,7 +217,7 @@
           return unique(results);
         })
       })
-    ); //.next(function(res) {console.log(new Date - t); return res;});
+    );
   };
 
   function concat(ary) {
@@ -205,9 +241,11 @@
 
     return getCompletion(query)
       .next(function(lists) {
-        return lists.map(function(completions) {
+        var regexpSegments = lists.map(function(completions) {
           return getRegExpStringFromWords(completions, longestMatch);
-        }).join('\s*');
+        });
+        if (regexpSegments.length == 1) return regexpSegments[0];
+        return regexpSegments.map(function(r) {return '(?:'+r+')'}).join('\s*') // need test
       });
   };
 

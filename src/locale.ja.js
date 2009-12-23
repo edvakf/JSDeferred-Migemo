@@ -103,7 +103,7 @@
     "xa":"ぁ", "xi":"ぃ", "xu":"ぅ", "xe":"ぇ", "xo":"ぉ", 
     "xya":"ゃ", "xyu":"ゅ", "xyo":"ょ",
     "pa":"ぱ", "pi":"ぴ", "pu":"ぷ", "pe":"ぺ", "po":"ぽ",
-    "va":"う゛ぁ", "vi":"う゛ぃ", "vu":"う゛", "ve":"う゛ぇ", "vo":"う゛ぉ", 
+    "va":"ゔぁ", "vi":"ゔぃ", "vu":"ゔ", "ve":"ゔぇ", "vo":"ゔぉ", 
     "wo":"を"
   };
 
@@ -118,10 +118,12 @@
     "V":"Ｖ","W":"Ｗ","X":"Ｘ","Y":"Ｙ","Z":"Ｚ",
     "1":"１","2":"２","3":"３","4":"４","5":"５","6":"６","7":"７",
     "8":"８","9":"９","0":"０",
+    /*
     "~":"〜","!":"！","@":"＠","#":"＃","$":"＄","%":"％","^":"＾",
     "&":"＆","*":"＊","(":"（",")":"）","_":"＿","+":"＋","{":"｝",
     "}":"｝","[":"［","]":"］","|":"｜","\\":"＼",":":"：",";":"；",
     "\"":"＼","<":"＜",",":"，",">":"＞",".":"．","?":"？","/":"／"
+    */
   };
 
   var hiraganaToKatakanaTable = {
@@ -132,7 +134,7 @@
     "な":"ナ","に":"ニ","ぬ":"ヌ","ね":"ネ","の":"ノ",
     "は":"ハ","ひ":"ヒ","ふ":"フ","へ":"ヘ","ほ":"ホ",
     "ま":"マ","み":"ミ","む":"ム","め":"メ","も":"モ",
-    "や":"ヤ","ゆ":"ユ","よ":"ヨ","う゛":"ヴ",
+    "や":"ヤ","ゆ":"ユ","よ":"ヨ","ゔ":"ヴ",
     "ら":"ラ","り":"リ","る":"ル","れ":"レ","ろ":"ロ",
     "わ":"ワ","ゐ":"ヰ","ゑ":"ヱ","を":"ヲ","ん":"ン",
     "が":"ガ","ぎ":"ギ","ぐ":"グ","げ":"ゲ","ご":"ゴ",
@@ -174,7 +176,7 @@
     "な":"ﾅ","に":"ﾆ","ぬ":"ﾇ","ね":"ﾈ","の":"ﾉ",
     "は":"ﾊ","ひ":"ﾋ","ふ":"ﾌ","へ":"ﾍ","ほ":"ﾎ",
     "ま":"ﾏ","み":"ﾐ","む":"ﾑ","め":"ﾒ","も":"ﾓ",
-    "や":"ﾔ","ゆ":"ﾕ","よ":"ﾖ","う゛":"ｳﾞ",
+    "や":"ﾔ","ゆ":"ﾕ","よ":"ﾖ","ゔ":"ｳﾞ",
     "ら":"ﾗ","り":"ﾘ","る":"ﾙ","れ":"ﾚ","ろ":"ﾛ",
     "わ":"ﾜ","を":"ｦ","ん":"ﾝ",
     "が":"ｶﾞ","ぎ":"ｷﾞ","ぐ":"ｸﾞ","げ":"ｹﾞ","ご":"ｺﾞ",
@@ -213,13 +215,20 @@
 
   function expandResult(completion) {
     var res = [completion];
-    if (re10.test(completion)) { // hankakuToZenkaku
+    if (re11.test(completion)) { // hankakuToZenkaku
+      re11.lastIndex = 0;
       res.push( completion.replace(re11, function(s) {return hankakuToZenkakuTable[s];}) );
-    } else if (re20.test(completion)) { // hiraganaToKatakana
+    }
+    if (re21.test(completion)) { // hiraganaToKatakana
+      re21.lastIndex = 0;
       res.push( completion.replace(re21, function(s) {return hiraganaToKatakanaTable[s];}) );
-    } else if (re30.test(completion)) { // hiraganaToHankaku
+    } 
+    if (re31.test(completion)) { // hiraganaToHankaku
+      re31.lastIndex = 0;
       res.push( completion.replace(re31, function(s) {return zenkakuToHankakuTable[s];}) );
-    } else if (re40.test(completion)) { // hiraganaToHankaku
+    } 
+    if (re41.test(completion)) { // hiraganaToHankaku
+      re41.lastIndex = 0;
       res.push( completion.replace(re41, function(s) {return hiraganaToHankakuTable[s];}) );
     }
     return res;
