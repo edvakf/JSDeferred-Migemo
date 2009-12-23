@@ -196,11 +196,14 @@
     
     return Deferred.parallel(
       expanded.map(function(group) {
-        if (group === last) {
-          var lookups = group.map(function(q) {return findAmbiguous(q);});
-        } else {
-          var lookups = group.map(function(q) {return findExact(q);});
-        }
+        var lookups = group.map(function(word) {
+          // don't search database if word length is zero
+          if (word.length === 0) return Deferred.next(function() {return [];})
+          // if the query is the last word or the word is less only one letter
+          else if (group !== last || word.length === 1) return findExact(word);
+          // else
+          return findAmbiguous(word);
+        })
 
         return Deferred.parallel( lookups )
         .next(function(res) {
@@ -244,8 +247,11 @@
         var regexpSegments = lists.map(function(completions) {
           return getRegExpStringFromWords(completions, longestMatch);
         });
+        // query : "shougi" => return : "将棋|商議|娼妓|床几|象棋|省議|shougi|ｓｈｏｕｇｉ|しょうぎ|ショウギ|ｼｮｳｷﾞ"
         if (regexpSegments.length == 1) return regexpSegments[0];
-        return regexpSegments.map(function(r) {return '(?:'+r+')'}).join('\s*') // need test
+        // query : "shougi kaisetu" => return : "(?:将棋|商議|娼妓|床几|象棋|省議|shougi|ｓｈｏｕｇｉ|しょうぎ|ショウギ|ｼｮｳｷﾞ)s*(?:回(?:折|折格子)|解説|開設|kaisetu|ｋａｉｓｅｔｕ|かいせつ|カイセツ|ｶｲｾﾂ)"
+        // query : "shougi " => return : "(?:将棋|商議|娼妓|床几|象棋|省議|shougi|ｓｈｏｕｇｉ|しょうぎ|ショウギ|ｼｮｳｷﾞ)\s*"  // tailing space means exact match
+        return regexpSegments.map(function(r) {return r ? '(?:'+r+')' : ''}).join('\s*'); 
       });
   };
 

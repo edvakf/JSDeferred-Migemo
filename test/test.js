@@ -193,6 +193,8 @@ Deferred
     .next(function(res) { ok(true, 'query : "bukkum", results : ' + j(res)) })
     ._(Migemo).getRegExpString('sai hatumei')
     .next(function(res) { ok(true, 'query : "sai hatumei", results : ' + j(res)) })
+    ._(Migemo).getRegExpString('sai ')
+    .next(function(res) { ok(true, 'query : "sai hatumei", results : ' + j(res)) })
     .error(function(e) { ok(false, e.toString()) })
     .next(function() { done.call(); })
 })
