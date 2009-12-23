@@ -63,6 +63,7 @@
 
     var config = {
       locale : 'ja',
+      version : '0.3.0', // version is to be used when auto-upgrading dictionary database
       dictionaryPath : dictionaryPath,
       expandQuery : expandQuery,
       expandResult : expandResult

@@ -58,13 +58,14 @@
 
   function initialize(config) {
     if (!config) config = {};
+    var version = config.version || 'NONE';
     var locale = config.locale || localStorage['MIGEMO_LOCALE'] || 'NONE';
     var dictionaryPath = config.dictionaryPath || 'dict/migemo-dict';
     if (config.expandQuery) expandQuery = config.expandQuery;
     if (config.expandResult) expandResult = config.expandResult;
 
     // if database is already created
-    if ( localStorage['MIGEMO_LOCALE'] == locale ) {
+    if ( localStorage['MIGEMO_LOCALE'] === locale && localStorage['MIGEMO_DICT_VERSION'] === version) {
       return Deferred.wait(0);
     } else {
       return openDictionaryFile( dictionaryPath )
@@ -72,6 +73,7 @@
           return createDatabase(text);
         }).next(function() {
           localStorage['MIGEMO_LOCALE'] = locale;
+          localStorage['MIGEMO_DICT_VERSION'] = version;
         });
     }
   };
