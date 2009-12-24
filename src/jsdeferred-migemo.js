@@ -105,7 +105,7 @@
       .next(function() {
         var lines = text.split(/\s*\n/);
         var i=0, line;
-        var t = new Date;
+        var t = Date.now();
         return Deferred.loop(Math.ceil(lines.length/1000), function() {
           return Dictionary._db.transaction(function() {
             while (line = lines[i++]) {
@@ -118,7 +118,7 @@
                 new Dictionary({word: sqlLikeEscape(word), first: first, completion: completion}).save();
               });
               if (i % 1000 == 0) {
-                if (Deferred.Migemo.debug) console.log(i + ' items stored. Time : ' + Math.floor((new Date-t)/100)/10 + ' s');
+                if (Deferred.Migemo.debug) console.log(i + ' items stored. Time : ' + Math.floor((Date.now()-t)/100)/10 + ' s');
                 break;
               }
             }
@@ -144,21 +144,24 @@
   function findAmbiguous(word) {
     // if cache exists
     var cached = findAmbiguousCache[word];
-    if (cached) return Deferred.next(function() {return cached;});
+    if (cached) {
+      if (Deferred.Migemo.debug) console.log('Ambiguous cache found for ' + word);
+      return Deferred.next(function() {return cached;});
+    }
     // else 
     var first = word.charAt(0);
+    var t = Date.now();
     return Dictionary
       .find({
         fields: ['completion'], 
         where: ['first = ? AND word LIKE ?', [first, sqlLikeEscape(word) + '%'] ]
       })
       .next(function(results) {
-        return results.map(function(result) {return result.completion;});
-      })
-      .next(function(res) { // caching mechanizm
-        findAmbiguousCache[word] = res;
+        results = results.map(function(result) {return result.completion;});
+        findAmbiguousCache[word] = results;
         setTimeout(function() { findAmbiguousCache[word] = null; },60*1000); // auto-delete cache after 1 min.
-        return res;
+        if (Deferred.Migemo.debug) console.log('Ambiguous search for ' + word + ' took ' + (Date.now() - t) + ' ms, found ' + results.length + ' results.');
+        return results;
       });
   };
 
@@ -166,20 +169,23 @@
   function findExact(word) {
     // if cache exists
     var cached = findExactCache[word];
-    if (cached) return Deferred.next(function() {return cached;});
+    if (cached) {
+      if (Deferred.Migemo.debug) console.log('Exact cache found for ' + word);
+      return Deferred.next(function() {return cached;});
+    }
     // else 
+    var t = Date.now();
     return Dictionary
       .find({
         fields: ['completion'], 
         where: ['word = ?', [sqlLikeEscape(word)] ]
       })
       .next(function(results) {
-        return results.map(function(result) {return result.completion;});
-      })
-      .next(function(res) { // caching mechanizm
-        findExactCache[word] = res;
+        results = results.map(function(result) {return result.completion;});
+        findExactCache[word] = results;
         setTimeout(function() { findExactCache[word] = null; },60*1000); // auto-delete cache after 1 min.
-        return res;
+        if (Deferred.Migemo.debug) console.log('Ambiguous search for ' + word + ' took ' + (Date.now() - t) + ' ms, found ' + results.length + ' results.');
+        return results;
       });
   };
 
@@ -188,7 +194,7 @@
    *   (completion list for each segment)
    */
   function getCompletion(query) {
-    var t = new Date;
+    var t = Date.now();
     if (query == '') return Deferred.next(function() {return [];});
 
     // expanding query means something like
@@ -209,7 +215,7 @@
 
         return Deferred.parallel( lookups )
         .next(function(res) {
-          if (Deferred.Migemo.debug) console.log(group+' : '+ (new Date - t) +' ms.');
+          if (Deferred.Migemo.debug) console.log(group+' : '+ (Date.now() - t) +' ms.');
           return res;
         })
           // group : ["atta","あった"] => results : [ ['attack', 'attach'], ['あった'] ]
