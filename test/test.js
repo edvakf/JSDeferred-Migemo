@@ -159,21 +159,26 @@ Deferred
 .test('initialize', function(done) {
   var t = new Date;
   return Migemo.initialize(config)
-    .next(function() {ok(true, 'migemo database created. Took'+ Math.floor((new Date - t)/1000) + ' sec.');})
+    .next(function() {ok(true, 'migemo database created. Took '+ Math.floor((new Date - t)/1000) + ' sec.');})
     .next(function() {done.call()});
 }, 1, 150*1000)
 
 .test('getCompletion', function(done) {
   return Migemo.getCompletion('shougi')
     .next(function(res) { ok(true, 'query : "shougi", results : ' + j(res)) })
+
     ._(Migemo).getCompletion('shougi kaisetu')
     .next(function(res) { ok(true, 'query : "shougi kaisetu", results : ' + j(res)) })
-    //._(Migemo).getCompletion('a')  // can handle very long results?
-    //.next(function(res) { ok(true, 'query : "a", results : ' + j(res)) })
+
+    ._(Migemo).getCompletion('a')  // exact match for one letter
+    .next(function(res) { ok(true, 'query : "a", results : ' + j(res)) })
+
     ._(Migemo).getCompletion('attorney')
     .next(function(res) { ok(true, 'query : "attorney", results : ' + j(res)) })
+
     ._(Migemo).getCompletion('bukkum')
     .next(function(res) { ok(true, 'query : "bukkum", results : ' + j(res)) })
+
     .error(function(e) { ok(false, e.toString()) })
     .next(function() { done.call(); })
 })
@@ -181,22 +186,28 @@ Deferred
 .test('getRegExpString', function(done) {
   return Migemo.getRegExpString('shougi')
     .next(function(res) { ok(true, 'query : "shougi", results : ' + j(res)) })
+
     ._(Migemo).getRegExpString('shougi kaisetu')
     .next(function(res) { ok(true, 'query : "shougi kaisetu", results : ' + j(res)) })
-    //._(Migemo).getRegExpString('a')  // can handle very long results?
-    //.next(function(res) { ok(true, 'query : "a", results : ' + j(res)); equals(true, new RegExp(res).test('相討ち') ); })
+
     ._(Migemo).getRegExpString('attorney')
     .next(function(res) { ok(true, 'query : "attorney", results : ' + j(res)) })
+
     ._(Migemo).getRegExpString('run like the wind')
     .next(function(res) { ok(true, 'query : "run like the wind", results : ' + j(res)) })
+
     ._(Migemo).getRegExpString('bukkuma-ku')
     .next(function(res) { ok(true, 'query : "bukkuma-ku", results : ' + j(res)) })
+
     ._(Migemo).getRegExpString('bukkum')
     .next(function(res) { ok(true, 'query : "bukkum", results : ' + j(res)) })
+
     ._(Migemo).getRegExpString('sai hatumei')
     .next(function(res) { ok(true, 'query : "sai hatumei", results : ' + j(res)) })
+
     ._(Migemo).getRegExpString('sai ')
     .next(function(res) { ok(true, 'query : "sai ", results : ' + j(res)) })
+
     .error(function(e) { ok(false, e.toString()) })
     .next(function() { done.call(); })
 })

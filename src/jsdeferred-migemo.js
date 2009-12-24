@@ -255,6 +255,7 @@
         var regexpSegments = lists.map(function(completions) {
           return getRegExpStringFromWords(completions, longestMatch);
         });
+
         // query : "shougi" => return : "将棋|商議|娼妓|床几|象棋|省議|shougi|ｓｈｏｕｇｉ|しょうぎ|ショウギ|ｼｮｳｷﾞ"
         if (regexpSegments.length == 1) return regexpSegments[0];
         // query : "shougi kaisetu" => return : "(?:将棋|商議|娼妓|床几|象棋|省議|shougi|ｓｈｏｕｇｉ|しょうぎ|ショウギ|ｼｮｳｷﾞ)s*(?:回(?:折|折格子)|解説|開設|kaisetu|ｋａｉｓｅｔｕ|かいせつ|カイセツ|ｶｲｾﾂ)"
