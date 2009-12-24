@@ -14,7 +14,7 @@
 
 // Example usage:
 //   var Migemo = Deferred.Migemo;
-//   var config = Migemo.createOptionsJa();
+//   var config = Migemo.createConfigJa();
 //   Migemo.initialize(config)
 //   .next(function() {
 //     return Migemo.getRegExpString('shinkansen');
