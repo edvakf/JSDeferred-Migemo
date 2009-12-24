@@ -261,12 +261,13 @@
     if (!words.length) return '';
     if (words.length == 1) return regexpEscape(words[0]);
 
-    var singleChars = [];
-    var longerChars = {};
+    // ex. words : ['a', 'ab', 'abc', 'abcd', 'ac', 'bc', 'cc']
+    var singleChars = []; // ['a']
+    var longerChars = {}; // {'a': ['b', 'bc', 'bcd', 'c'], 'b': ['c'], 'c': ['c']}
     words.forEach(function(word) {
       if (!word.length) return;
       if (word.length == 1) return singleChars.push(word);
-      var head = word[0];
+      var head = word[0]; // charAt(0)
       var tail = word.slice(1);
       if (longerChars[head]) {
         longerChars[head].push(tail);
@@ -275,7 +276,7 @@
       }
     });
 
-    var regexpLonger = [];
+    var regexpLonger = []; // ['a(RESULT_OF_RECURSION)', 'bc', 'cc']
     for (var x in longerChars) {
       var tails = longerChars[x];
       if (tails.length === 1) {

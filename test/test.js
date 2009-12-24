@@ -121,6 +121,8 @@ Migemo.debug = true;
 Deferred
 .test('getRegExpStringFromWords', function(done) {
   var getRegExpStringFromWords = Migemo.getRegExpStringFromWords;
+  equals(getRegExpStringFromWords(['a', 'ab', 'abc', 'abcd', 'ac', 'bc', 'cc']), 'a|a(?:[bc]|b(?:c|cd))|bc|cc');
+  equals(getRegExpStringFromWords(['a', 'ab', 'abc', 'abcd', 'ac', 'bc', 'cc'], true), 'a(?:b(?:cd|c)|[bc])|bc|cc|a');
   var re = new RegExp( getRegExpStringFromWords(['a','ab','abc','acd','bcd']) );
   equals(re.toString(), '/a|a(?:b|bc|cd)|bcd/');
   equals(re.test('bcd'), true);
@@ -134,7 +136,7 @@ Deferred
   equals(re.toString(), '/a(?:bc|cd|b)|bcd|a/');
   equals(re.test('bcd'), true);
   done.call();
-}, 9)
+}, 11)
 
 .test('expandQuery', function(done) {
   var expandQuery = config.expandQuery;
@@ -194,7 +196,7 @@ Deferred
     ._(Migemo).getRegExpString('sai hatumei')
     .next(function(res) { ok(true, 'query : "sai hatumei", results : ' + j(res)) })
     ._(Migemo).getRegExpString('sai ')
-    .next(function(res) { ok(true, 'query : "sai hatumei", results : ' + j(res)) })
+    .next(function(res) { ok(true, 'query : "sai ", results : ' + j(res)) })
     .error(function(e) { ok(false, e.toString()) })
     .next(function() { done.call(); })
 })
