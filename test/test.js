@@ -190,6 +190,9 @@ Deferred
     ._(Migemo).getRegExpString('shougi kaisetu')
     .next(function(res) { ok(true, 'query : "shougi kaisetu", results : ' + j(res)) })
 
+    ._(Migemo).getCompletion('su~pa~')
+    .next(function(res) { ok(true, 'query : "su~pa~", results : ' + j(res)) })
+
     ._(Migemo).getRegExpString('attorney')
     .next(function(res) { ok(true, 'query : "attorney", results : ' + j(res)) })
 
