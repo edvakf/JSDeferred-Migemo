@@ -39,6 +39,8 @@
           var segments = normalized.split(re_all).filter(function(s) {return s!=''});
           var s;
           while (s = segments.shift()) {
+              // if the last letter is 'n' don't decide it's 'ん', but leave possibility for 'な', 'にゃ', etc
+            if (s == 'n' && segments.length == 0) break;
             if (romanToHiraganaTable[s]) hiragana += romanToHiraganaTable[s];
             else break;
           }
@@ -107,8 +109,7 @@
     "xa":"ぁ", "xi":"ぃ", "xu":"ぅ", "xe":"ぇ", "xo":"ぉ", 
     "xya":"ゃ", "xyu":"ゅ", "xyo":"ょ",
     "pa":"ぱ", "pi":"ぴ", "pu":"ぷ", "pe":"ぺ", "po":"ぽ",
-    "va":"ゔぁ", "vi":"ゔぃ", "vu":"ゔ", "ve":"ゔぇ", "vo":"ゔぉ", 
-    "wo":"を"
+    "va":"ゔぁ", "vi":"ゔぃ", "vu":"ゔ", "ve":"ゔぇ", "vo":"ゔぉ"
   };
 
   var hankakuToZenkakuTable = {

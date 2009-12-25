@@ -48,7 +48,7 @@
   /*
    * define Deferred.Migemo.*
    */
-  Deferred.Migemo = {
+  var Migemo = Deferred.Migemo = {
     initialize : initialize,
     getCompletion : getCompletion,
     getRegExpString : getRegExpString,
@@ -118,7 +118,7 @@
                 new Dictionary({word: sqlLikeEscape(word), first: first, completion: completion}).save();
               });
               if (i % 1000 == 0) {
-                if (Deferred.Migemo.debug) console.log(i + ' items stored. Time : ' + Math.floor((Date.now()-t)/100)/10 + ' s');
+                if (Migemo.debug) console.log(i + ' items stored. Time : ' + Math.floor((Date.now()-t)/100)/10 + ' s');
                 break;
               }
             }
@@ -155,7 +155,7 @@
     // if cache exists
     var cached = findAmbiguousCache[word];
     if (cached) {
-      if (Deferred.Migemo.debug) console.log('Ambiguous cache found for ' + word);
+      if (Migemo.debug) console.log('Ambiguous cache found for ' + word);
       return Deferred.next(function() {return cached;});
     }
     // else 
@@ -170,7 +170,7 @@
         results = results.map(function(result) {return result.completion;});
         findAmbiguousCache[word] = results;
         setTimeout(function() { findAmbiguousCache[word] = null; },60*1000); // auto-delete cache after 1 min.
-        if (Deferred.Migemo.debug) console.log('Ambiguous search for ' + word + ' took ' + (Date.now() - t) + ' ms, found ' + results.length + ' results.');
+        if (Migemo.debug) console.log('Ambiguous search for ' + word + ' took ' + (Date.now() - t) + ' ms, found ' + results.length + ' results.');
         return results;
       });
   };
@@ -180,7 +180,7 @@
     // if cache exists
     var cached = findExactCache[word];
     if (cached) {
-      if (Deferred.Migemo.debug) console.log('Exact cache found for ' + word);
+      if (Migemo.debug) console.log('Exact cache found for ' + word);
       return Deferred.next(function() {return cached;});
     }
     // else 
@@ -194,7 +194,7 @@
         results = results.map(function(result) {return result.completion;});
         findExactCache[word] = results;
         setTimeout(function() { findExactCache[word] = null; },60*1000); // auto-delete cache after 1 min.
-        if (Deferred.Migemo.debug) console.log('Ambiguous search for ' + word + ' took ' + (Date.now() - t) + ' ms, found ' + results.length + ' results.');
+        if (Migemo.debug) console.log('Ambiguous search for ' + word + ' took ' + (Date.now() - t) + ' ms, found ' + results.length + ' results.');
         return results;
       });
   };
@@ -218,24 +218,24 @@
           // don't search database if word length is zero
           if (word.length === 0) return Deferred.next(function() {return [];})
           // if the query is the last word or the word is less only one letter
-          else if (group !== last || word.length === 1) return findExact(word);
+          else if (group !== last) return findExact(word);  // need exact find when word.length === 1 ?
           // else
           return findAmbiguous(word);
         })
 
         return Deferred.parallel( lookups )
         .next(function(res) {
-          if (Deferred.Migemo.debug) console.log(group+' : '+ (Date.now() - t) +' ms.');
+          if (Migemo.debug) console.log(group+' : '+ (Date.now() - t) +' ms.');
           return res;
         })
           // group : ["atta","あった"] => results : [ ['attack', 'attach'], ['あった'] ]
         .next(function(results) { 
-          results = concat(results).concat(group);
+          results = concat(results.map(uniqueBeginning)).concat(group);
           results = results.map(expandResult);
           // what expandResult does is: 'attack' => ['attack', 'attacked', 'attacking', 'attacker'] 
           // or 'あった' => ['あった', 'アッタ']
           results = concat(results);
-          return unique(results);
+          return uniqueBeginning(results);
         })
       })
     );
@@ -245,7 +245,23 @@
     return Array.prototype.concat.apply([], ary);
   }
   function unique(ary) {
-    return ary.filter(function(a, i) {return ary.indexOf(a) == i});
+    return ary.filter(function(a, i) {return ary.indexOf(a) == i;});
+  }
+
+  // takes array of strings, if a string is at the beginning of 
+  // another string, then remove the longer one
+  function uniqueBeginning(ary) {
+    var t = Date.now();
+    var l = ary.length;
+    ary = ary.sort(function(a,b) {return a.length - b.length;});
+    for (var i=0; i<ary.length; i++) {
+      var small = ary[i];
+      for (var j=i+1; j<ary.length; j++) {
+        if (ary[j].indexOf(small) == 0) ary.splice(j--, 1);
+      }
+    }
+    if (Migemo.debug) console.log('uniqueByBeginning : length ' + l + ' -> ' + ary.length + '. time ' + (Date.now() - t) + 'ms.');
+    return ary;
   }
 
   // below functions are intended to be overridden by the locale
@@ -260,10 +276,10 @@
   function getRegExpString(query, longestMatch) {
     if (query == '') return Deferred.next(function() {return '';});
 
-    return getCompletion(query)
+    return Migemo.getCompletion(query)
       .next(function(lists) {
         var regexpSegments = lists.map(function(completions) {
-          return getRegExpStringFromWords(completions, longestMatch);
+          return Migemo.getRegExpStringFromWords(completions, longestMatch);
         });
 
         // query : "shougi" => return : "将棋|商議|娼妓|床几|象棋|省議|shougi|ｓｈｏｕｇｉ|しょうぎ|ショウギ|ｼｮｳｷﾞ"
@@ -301,7 +317,7 @@
       } else { // tails.length > 1
         regexpLonger.push(
           regexpEscape(x) +   // recursion here! 
-            '(?:' + getRegExpStringFromWords(tails, longestMatch) + ')'
+            '(?:' + Migemo.getRegExpStringFromWords(tails, longestMatch) + ')'
         );
       }
     }

@@ -170,8 +170,8 @@ Deferred
     ._(Migemo).getCompletion('shougi kaisetu')
     .next(function(res) { ok(true, 'query : "shougi kaisetu", results : ' + j(res)) })
 
-    ._(Migemo).getCompletion('a')  // exact match for one letter
-    .next(function(res) { ok(true, 'query : "a", results : ' + j(res)) })
+    ._(Migemo).getCompletion('s') // very long results, uniqueBeginning function takes long time
+    .next(function(res) { ok(true, 'query : "s", results : ' + j(res)) })
 
     ._(Migemo).getCompletion('attorney')
     .next(function(res) { ok(true, 'query : "attorney", results : ' + j(res)) })
@@ -213,6 +213,15 @@ Deferred
 
     ._(Migemo).getRegExpString('sai ')
     .next(function(res) { ok(true, 'query : "sai ", results : ' + j(res)) })
+
+    ._(Migemo).getRegExpString('n')
+    .next(function(res) { ok(true, res) })
+
+    ._(Migemo).getRegExpString('n')
+    .next(function(res) { equals(true, new RegExp(res).test('にゃ')) })
+
+    ._(Migemo).getRegExpString('n')
+    .next(function(res) { equals(true, new RegExp(res).test('に')) })
 
     .error(function(e) { ok(false, e.toString()) })
     .next(function() { done.call(); })
