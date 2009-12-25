@@ -12,4 +12,5 @@ Atsushi TAKAYAMA (@edvakf on twitter)
 
 == Lisence
 
-The MIT Lisence
+The GNU GPL version 2 (see the file COPYING)
+

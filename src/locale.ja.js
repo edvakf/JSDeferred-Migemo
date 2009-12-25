@@ -5,8 +5,8 @@
 
   var getRegExpStringFromWords = Deferred.Migemo.getRegExpStringFromWords;
 
-  Deferred.Migemo.createConfigJa = function(romanToHiraganaTable, dictionaryPath) {
-    if (!dictionaryPath) dictionaryPath = 'dict/migemo-dict-ja';
+  Deferred.Migemo.createConfigJa = function(romanToHiraganaTable, dictionaryPaths) {
+    if (!dictionaryPaths) dictionaryPaths = ['dict/migemo-dict-ja', 'dict/migemo-dict-ja-roman'];
     if (!romanToHiraganaTable) romanToHiraganaTable = ROMAN_TO_HIRAGANA_TABLE;
     romanToHiraganaTable['xtu'] = 'っ'; // not configurable
 
@@ -66,8 +66,8 @@
 
     var config = {
       locale : 'ja',
-      version : '0.3.0', // version is to be used when auto-upgrading dictionary database
-      dictionaryPath : dictionaryPath,
+      version : '0.4.0', // version is to be used when auto-upgrading dictionary database
+      dictionaryPaths : dictionaryPaths,
       expandQuery : expandQuery,
       expandResult : expandResult
     };

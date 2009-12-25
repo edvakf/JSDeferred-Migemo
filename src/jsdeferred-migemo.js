@@ -60,7 +60,7 @@
     if (!config) config = {};
     var version = config.version || 'NONE';
     var locale = config.locale || localStorage['MIGEMO_LOCALE'] || 'NONE';
-    var dictionaryPath = config.dictionaryPath || 'dict/migemo-dict';
+    var dictionaryPaths = config.dictionaryPaths || ['dict/migemo-dict'];
     if (config.expandQuery) expandQuery = config.expandQuery;
     if (config.expandResult) expandResult = config.expandResult;
 
@@ -68,7 +68,7 @@
     if ( localStorage['MIGEMO_LOCALE'] === locale && localStorage['MIGEMO_DICT_VERSION'] === version) {
       return Deferred.wait(0);
     } else {
-      return openDictionaryFile( dictionaryPath )
+      return openDictionaryFiles( dictionaryPaths )
         .next(function(text) {
           return createDatabase(text);
         }).next(function() {
@@ -130,6 +130,16 @@
   };
 
   // load dictionary file
+  function openDictionaryFiles(paths) {
+    console.log(paths);
+    return Deferred.parallel(
+      paths.map(function(path) {return openDictionaryFile(path);})
+    )
+    .next(function(texts) {
+      return texts.join('\n');
+    })
+  };
+
   function openDictionaryFile(path) {
     var d = new Deferred;
     var xhr = new XMLHttpRequest;
