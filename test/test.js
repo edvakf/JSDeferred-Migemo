@@ -115,7 +115,7 @@ var Database = Deferred.WebDatabase;
 var FullText = Database.FullText;
 
 var Migemo = Deferred.Migemo;
-var config = Migemo.createConfigJa(null, '../src/dict/migemo-dict-ja');
+var config = Migemo.createConfigJa(null, '../dict/migemo-dict-ja');
 Migemo.debug = true;
 
 Deferred
@@ -178,6 +178,9 @@ Deferred
 
     ._(Migemo).getCompletion('bukkum')
     .next(function(res) { ok(true, 'query : "bukkum", results : ' + j(res)) })
+
+    ._(Migemo).getCompletion('TaBeruna kiken')
+    .next(function(res) { ok(true, 'query : "TaBeruna kiken", results : ' + j(res)) })
 
     .error(function(e) { ok(false, e.toString()) })
     .next(function() { done.call(); })
