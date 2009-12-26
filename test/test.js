@@ -115,7 +115,7 @@ var Database = Deferred.WebDatabase;
 var FullText = Database.FullText;
 
 var Migemo = Deferred.Migemo;
-var config = Migemo.createConfigJa(null, ['../src/dict/migemo-dict-ja','../src/dict/migemo-dict-ja-roman']);
+var config = Migemo.createConfigJa(null, ['../dict/migemo-dict-ja','../dict/migemo-dict-ja-roman']);
 Migemo.debug = true;
 
 Deferred
@@ -222,6 +222,9 @@ Deferred
 
     ._(Migemo).getRegExpString('n')
     .next(function(res) { equals(true, new RegExp(res).test('に')) })
+
+    ._(Migemo).getRegExpString('ny')
+    .next(function(res) { equals(true, new RegExp(res).test('にゃ')) })
 
     .error(function(e) { ok(false, e.toString()) })
     .next(function() { done.call(); })
