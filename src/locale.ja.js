@@ -1,4 +1,8 @@
 // japanese locale for JSDeferred-Migemo
+// License : The MIT License <http://www.opensource.org/licenses/mit-license.php>
+//   Copyright (c) 2009 Atsushi TAKAYAMA (taka.atsushi (a) gmail.com)
+// Depends on :
+//   jsdeferred-migemo <http://github.com/edvakf/JSDeferred-Migemo>
 
 (function() {
   if (!window.Deferred || !window.Deferred.Migemo) return;
