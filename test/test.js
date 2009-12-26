@@ -115,7 +115,7 @@ var Database = Deferred.WebDatabase;
 var FullText = Database.FullText;
 
 var Migemo = Deferred.Migemo;
-var config = Migemo.createConfigJa(null, ['../dict/migemo-dict-ja','../dict/migemo-dict-ja-roman']);
+var config = Migemo.createConfigJa(null, ['../dict/migemo-dict-ja','../dict/migemo-dict-ja-alphabet']);
 Migemo.debug = true;
 
 Deferred
