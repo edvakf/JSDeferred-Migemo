@@ -9,8 +9,7 @@
 
   var getRegExpStringFromWords = Deferred.Migemo.getRegExpStringFromWords;
 
-  Deferred.Migemo.createConfigJa = function(romanToHiraganaTable, dictionaryPaths) {
-    if (!dictionaryPaths) dictionaryPaths = ['dict/migemo-dict-ja', 'dict/migemo-dict-ja-alphabet'];
+  Deferred.Migemo.createConfigJa = function(romanToHiraganaTable) {
     if (!romanToHiraganaTable) romanToHiraganaTable = ROMAN_TO_HIRAGANA_TABLE;
     romanToHiraganaTable['xtu'] = 'っ'; // not configurable
 
@@ -73,7 +72,7 @@
     var config = {
       locale : 'ja',
       version : '0.5.0', // version is to be used when auto-upgrading dictionary database
-      dictionaryPaths : dictionaryPaths,
+      dictionaryPaths : ['dict/migemo-dict-ja'],
       expandQuery : expandQuery,
       expandResult : expandResult
     };
@@ -108,6 +107,7 @@
     "cha":"ちゃ", "chu":"ちゅ", "cho":"ちょ", 
     "tya":"ちゃ", "tyu":"ちゅ", "tyo":"ちょ",
     "hya":"ひゃ", "hyu":"ひゅ", "hyo":"ひょ", 
+    "rya":"りゃ", "ryu":"りゅ", "ryo":"りょ", 
     "thi":"てぃ",
     "la":"ぁ", "li":"ぃ", "lu":"ぅ", "le":"ぇ", "lo":"ぉ", 
     "xa":"ぁ", "xi":"ぃ", "xu":"ぅ", "xe":"ぇ", "xo":"ぉ", 

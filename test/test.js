@@ -115,7 +115,10 @@ var Database = Deferred.WebDatabase;
 var FullText = Database.FullText;
 
 var Migemo = Deferred.Migemo;
-var config = Migemo.createConfigJa(null, ['../dict/migemo-dict-ja','../dict/migemo-dict-ja-alphabet']);
+var config = Migemo.createConfigJa(null);
+config.dictionaryPaths = ['dict/migemo-dict-ja','dict/migemo-dict-ja-alphabet']
+config.forceCreateDatabase = true;
+config.customDictionary = 'ちょろめ chrome\nfirefox 火狐';
 Migemo.debug = true;
 
 Deferred
@@ -164,7 +167,10 @@ Deferred
 }, 1, 150*1000)
 
 .test('getCompletion', function(done) {
-  return Migemo.getCompletion('shougi')
+  return Migemo.getCompletion('firefox ちょろめ').peek() // custom dictionary
+    .next(function(res) { equals(true, res[0].indexOf('火狐') >= 0 && res[1].indexOf('chrome') >= 0) })
+
+    ._(Migemo).getCompletion('shougi')
     .next(function(res) { ok(true, 'query : "shougi", results : ' + j(res)) })
 
     ._(Migemo).getCompletion('shougi kaisetu')

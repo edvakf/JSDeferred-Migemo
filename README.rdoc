@@ -10,6 +10,6 @@ Migemo engine using Web SQL Database.
 
 Atsushi TAKAYAMA (@edvakf on twitter)
 
-== Lisence
+== License
 
-The MIT Lisence
+The MIT License
